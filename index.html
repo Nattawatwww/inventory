@@ -46,62 +46,39 @@
         h2 { margin: 0 0 24px 0; font-weight: 600; font-size: 20px; text-align: center; }
         .label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; }
 
-        /* Custom Dropdown Styling */
+        /* Custom Dropdown */
         .custom-select { position: relative; width: 100%; margin-bottom: 20px; }
-        
         .select-selected {
             background: var(--input-bg);
             border: 1px solid var(--border);
             padding: 14px 18px;
             border-radius: 16px;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 15px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 15px;
         }
-
         .select-selected:after {
-            content: "";
-            width: 8px; height: 8px;
-            border-right: 2px solid var(--text-dim);
-            border-bottom: 2px solid var(--text-dim);
-            transform: rotate(45deg);
-            margin-bottom: 4px;
+            content: ""; width: 8px; height: 8px;
+            border-right: 2px solid var(--text-dim); border-bottom: 2px solid var(--text-dim);
+            transform: rotate(45deg); margin-bottom: 4px;
         }
-
         .select-items {
-            position: absolute;
-            background: #1e2433;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            top: calc(100% + 8px);
-            left: 0; right: 0;
-            z-index: 99;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            position: absolute; background: #1e2433; border: 1px solid var(--border);
+            border-radius: 16px; top: calc(100% + 8px); left: 0; right: 0;
+            z-index: 99; overflow: hidden; opacity: 0; transform: translateY(-10px);
+            pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
+        .select-items div { padding: 14px 18px; cursor: pointer; font-size: 15px; color: var(--text-dim); }
+        .select-items div:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .select-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        .select-items div {
-            padding: 14px 18px;
-            cursor: pointer;
-            font-size: 15px;
-            color: var(--text-dim);
+        /* Input Hide Spinners (Chrome, Safari, Edge, Opera) */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-
-        .select-items div:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        .select-show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        /* Input Hide Spinners (Firefox) */
+        input[type=number] { -moz-appearance: textfield; }
 
         input {
             width: 100%; background: var(--input-bg); border: 1px solid var(--border);
@@ -114,7 +91,6 @@
             width: 100%; padding: 14px; border-radius: 16px; border: none;
             font-weight: 600; cursor: pointer; font-size: 15px;
         }
-
         .btn-primary { background: var(--accent); color: white; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
@@ -128,8 +104,12 @@
         .key-id { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 15px; color: #fff; }
         .key-timer { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); background: rgba(99, 102, 241, 0.1); padding: 4px 10px; border-radius: 8px; }
 
-        .actions { display: grid; grid-template-columns: 1fr 1fr 1fr 44px; gap: 8px; }
-        .btn-sm { padding: 8px; border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); }
+        .actions { display: grid; grid-template-columns: 50px 1fr 1fr 44px; gap: 8px; }
+        .input-qty {
+            margin: 0 !important; height: 38px !important; padding: 0 !important;
+            text-align: center; border-radius: 10px !important; background: rgba(255,255,255,0.05);
+        }
+        .btn-sm { padding: 8px; border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); height: 38px; }
         .btn-del { color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
 
         #toast {
@@ -155,7 +135,6 @@
         <div class="card">
             <h2>Management</h2>
             <span class="label">Duration</span>
-            
             <div class="custom-select">
                 <div class="select-selected" id="selected-val" onclick="toggleDropdown()">1 Day</div>
                 <div class="select-items" id="dropdown-items">
@@ -164,7 +143,6 @@
                     <div onclick="setDuration(30, '30 Days')">30 Days</div>
                 </div>
             </div>
-
             <button class="btn-primary" onclick="generateAndSave()">Generate Key</button>
         </div>
         <div id="list-container"></div>
@@ -207,35 +185,23 @@
     }
 
     function getCountdown(expiry) {
-        const now = Math.floor(Date.now() / 1000);
-        const diff = expiry - now;
+        const diff = expiry - Math.floor(Date.now() / 1000);
         if (diff <= 0) return "EXPIRED";
-        
-        const d = Math.floor(diff / 86400);
-        const h = Math.floor((diff % 86400) / 3600);
-        const m = Math.floor((diff % 3600) / 60);
-        const s = diff % 60;
-        
-        let res = "";
-        if (d > 0) res += d + "d ";
-        res += `${h}h ${m}m ${s}s`;
-        return res;
+        const d = Math.floor(diff / 86400), h = Math.floor((diff % 86400) / 3600), m = Math.floor((diff % 3600) / 60), s = diff % 60;
+        return (d > 0 ? d + "d " : "") + `${h}h ${m}m ${s}s`;
     }
 
     async function fetchKeys() {
         try {
             const res = await fetch(`${DB_URL}.json?auth=${DB_SECRET}`);
-            const data = await res.json() || {};
-            allKeys = data;
+            allKeys = await res.json() || {};
             renderList();
         } catch (e) {}
     }
 
     function renderList() {
         const container = document.getElementById('list-container');
-        const scrollPos = window.scrollY;
         container.innerHTML = "";
-        
         Object.keys(allKeys).reverse().forEach(id => {
             const item = allKeys[id];
             const div = document.createElement('div');
@@ -246,7 +212,7 @@
                     <span class="key-timer" id="timer-${id}">${getCountdown(item.expiry)}</span>
                 </div>
                 <div class="actions">
-                    <input type="number" style="margin:0; height:34px; padding:5px; text-align:center;" id="val-${id}" value="1">
+                    <input type="number" class="input-qty" id="val-${id}" value="1">
                     <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'add')">+ Day</button>
                     <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'sub')">- Day</button>
                     <button class="btn-sm btn-del" onclick="deleteKey('${id}')">✕</button>
@@ -255,7 +221,6 @@
         });
     }
 
-    // Update Countdown every 1 second
     setInterval(() => {
         for (let id in allKeys) {
             const el = document.getElementById(`timer-${id}`);
