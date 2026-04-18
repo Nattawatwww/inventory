@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key</title>
+    <title>JOOD Admin - Key Management</title>
     <style>
-        /* ใช้ Inter ฟอนต์ยอดนิยมสำหรับ UI มินิมอล */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         
         :root {
@@ -16,14 +15,15 @@
             --text-main: #ffffff;
             --text-dim: #94a3b8;
             --danger: #ef4444;
+            --success: #10b981; /* เพิ่มสีเขียวสำหรับ Reset */
             --input-bg: rgba(255, 255, 255, 0.03);
         }
 
         * { 
             box-sizing: border-box; 
             transition: all 0.2s ease; 
-            font-family: 'Inter', sans-serif; /* บังคับใช้ Inter ทั้งหมด */
-            letter-spacing: -0.01em; /* ลดระยะห่างตัวอักษรให้นิดนึงเพื่อให้ดู Modern */
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
         }
 
         body {
@@ -33,7 +33,7 @@
             margin: 0;
             display: flex; justify-content: center;
             min-height: 100vh; padding: 40px 20px;
-            -webkit-font-smoothing: antialiased; /* ทำให้ฟอนต์ดูคมชัดขึ้นบนจอ Mac/iOS */
+            -webkit-font-smoothing: antialiased;
         }
 
         .container { width: 100%; max-width: 440px; }
@@ -66,7 +66,6 @@
             display: block; 
         }
 
-        /* Custom Dropdown */
         .custom-select { position: relative; width: 100%; margin-bottom: 20px; }
         .select-selected {
             background: var(--input-bg);
@@ -76,7 +75,6 @@
             cursor: pointer;
             display: flex; justify-content: space-between; align-items: center; 
             font-size: 14px;
-            font-weight: 400;
         }
         .select-selected:after {
             content: ""; width: 6px; height: 6px;
@@ -100,10 +98,6 @@
         }
         input:focus { border-color: var(--accent); }
 
-        /* Hide Number Spinners */
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-
         button {
             width: 100%; padding: 14px; border-radius: 16px; border: none;
             font-weight: 500; cursor: pointer; font-size: 14px;
@@ -111,7 +105,6 @@
         .btn-primary { background: var(--accent); color: white; }
         .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); }
 
-        /* Key Item List */
         .key-item {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
@@ -119,23 +112,27 @@
         }
         .key-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .key-id { font-weight: 600; font-size: 14px; color: #fff; letter-spacing: 0.02em; }
+        
+        .badge-group { display: flex; gap: 6px; align-items: center; }
         .key-timer { 
-            font-size: 11px; 
-            font-weight: 500; 
-            color: var(--accent); 
-            background: rgba(99, 102, 241, 0.1); 
-            padding: 4px 10px; border-radius: 8px; 
-            letter-spacing: 0.02em;
+            font-size: 11px; font-weight: 500; 
+            color: var(--accent); background: rgba(99, 102, 241, 0.1); 
+            padding: 4px 10px; border-radius: 8px;
         }
+        /* เพิ่มสไตล์ตัวบอกสถานะล็อก HWID */
+        .hwid-status { font-size: 10px; color: var(--text-dim); }
 
-        .actions { display: grid; grid-template-columns: 50px 1fr 1fr 44px; gap: 8px; }
+        /* ปรับ grid actions เพื่อรองรับปุ่ม Reset */
+        .actions { display: grid; grid-template-columns: 45px 1fr 1fr 38px 38px; gap: 6px; }
+        
         .input-qty {
             margin: 0 !important; height: 38px !important; padding: 0 !important;
             text-align: center; border-radius: 10px !important; background: rgba(255,255,255,0.05);
             font-size: 13px; font-weight: 500;
         }
-        .btn-sm { padding: 8px; border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); height: 38px; font-weight: 500; }
+        .btn-sm { padding: 0; border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); height: 38px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
         .btn-del { color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
+        .btn-reset { color: var(--success); border-color: rgba(16, 185, 129, 0.2); font-size: 16px; }
 
         #toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -150,7 +147,7 @@
 
 <div class="container">
     <div id="login-screen" class="card">
-        <h2>JOOD Key</h2>
+        <h2>JOOD Admin Access</h2>
         <span class="label">Access Password</span>
         <input type="password" id="adminPass" placeholder="••••">
         <button class="btn-primary" onclick="checkLogin()">Authenticate</button>
@@ -158,8 +155,8 @@
 
     <div id="dashboard" style="display:none;">
         <div class="card">
-            <h2>Management</h2>
-            <span class="label">Initial Duration</span>
+            <h2>Key Management</h2>
+            <span class="label">Default Duration</span>
             <div class="custom-select">
                 <div class="select-selected" id="selected-val" onclick="toggleDropdown()">1 Day Access</div>
                 <div class="select-items" id="dropdown-items">
@@ -168,7 +165,7 @@
                     <div onclick="setDuration(30, '30 Days Access')">30 Days Access</div>
                 </div>
             </div>
-            <button class="btn-primary" onclick="generateAndSave()">Generate Key</button>
+            <button class="btn-primary" onclick="generateAndSave()">Generate New Key</button>
         </div>
         <div id="list-container"></div>
     </div>
@@ -191,7 +188,8 @@
 
     window.onclick = function(event) {
         if (!event.target.matches('.select-selected')) {
-            document.getElementById("dropdown-items").classList.remove("select-show");
+            const dropdown = document.getElementById("dropdown-items");
+            if(dropdown) dropdown.classList.remove("select-show");
         }
     }
 
@@ -229,18 +227,23 @@
         container.innerHTML = "";
         Object.keys(allKeys).reverse().forEach(id => {
             const item = allKeys[id];
+            const hasHWID = item.hwid && item.hwid !== "";
             const div = document.createElement('div');
             div.className = 'key-item';
             div.innerHTML = `
                 <div class="key-info">
-                    <span class="key-id">${id}</span>
+                    <div>
+                        <span class="key-id">${id}</span>
+                        <div class="hwid-status">${hasHWID ? '🔒 Locked' : '🔓 Available'}</div>
+                    </div>
                     <span class="key-timer" id="timer-${id}">${getCountdown(item.expiry)}</span>
                 </div>
                 <div class="actions">
                     <input type="number" class="input-qty" id="val-${id}" value="1">
-                    <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'add')">+ Day</button>
-                    <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'sub')">- Day</button>
-                    <button class="btn-sm btn-del" onclick="deleteKey('${id}')">✕</button>
+                    <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'add')">+ D</button>
+                    <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'sub')">- D</button>
+                    <button class="btn-sm btn-reset" title="Reset HWID" onclick="resetHWID('${id}')">↺</button>
+                    <button class="btn-sm btn-del" title="Delete Key" onclick="deleteKey('${id}')">✕</button>
                 </div>`;
             container.appendChild(div);
         });
@@ -260,7 +263,10 @@
     async function generateAndSave() {
         const key = 'JOOD-' + Math.random().toString(36).substring(2, 7).toUpperCase();
         const expiry = Math.floor(Date.now() / 1000) + (currentDuration * 86400);
-        await fetch(`${DB_URL}/${key}.json?auth=${DB_SECRET}`, { method: 'PUT', body: JSON.stringify({ expiry }) });
+        await fetch(`${DB_URL}/${key}.json?auth=${DB_SECRET}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ expiry: expiry, hwid: "" }) 
+        });
         showToast("Key Generated"); fetchKeys();
     }
 
@@ -268,13 +274,22 @@
         const days = parseInt(document.getElementById(`val-${key}`).value) || 0;
         const newExpiry = mode === 'add' ? currentExpiry + (days * 86400) : currentExpiry - (days * 86400);
         await fetch(`${DB_URL}/${key}/expiry.json?auth=${DB_SECRET}`, { method: 'PUT', body: JSON.stringify(newExpiry) });
-        showToast("Updated"); fetchKeys();
+        showToast("Time Updated"); fetchKeys();
     }
 
-    async function deleteKey(key, silent = false) {
-        if (!silent && !confirm("Delete " + key + "?")) return;
+    async function resetHWID(key) {
+        if (!confirm("ต้องการรีเซ็ต HWID สำหรับ " + key + " ใช่หรือไม่?")) return;
+        await fetch(`${DB_URL}/${key}/hwid.json?auth=${DB_SECRET}`, { 
+            method: 'PUT', 
+            body: JSON.stringify("") 
+        });
+        showToast("HWID Reset Success"); fetchKeys();
+    }
+
+    async function deleteKey(key) {
+        if (!confirm("Delete " + key + "?")) return;
         await fetch(`${DB_URL}/${key}.json?auth=${DB_SECRET}`, { method: 'DELETE' });
-        if (!silent) showToast("Deleted"); fetchKeys();
+        showToast("Deleted"); fetchKeys();
     }
 
     function startDataSync() { fetchKeys(); setInterval(fetchKeys, 20000); }
