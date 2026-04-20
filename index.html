@@ -9,7 +9,7 @@
         
         :root {
             --bg: #0b0f1a;
-            --card-bg: rgba(23, 28, 41, 0.8);
+            --card-bg: rgba(23, 28, 41, 0.9);
             --border: rgba(255, 255, 255, 0.08);
             --accent: #6366f1;
             --text-main: #ffffff;
@@ -24,7 +24,6 @@
             box-sizing: border-box; 
             transition: all 0.2s ease; 
             font-family: 'Inter', sans-serif;
-            letter-spacing: -0.01em;
         }
 
         body {
@@ -34,7 +33,6 @@
             margin: 0;
             display: flex; justify-content: center;
             min-height: 100vh; padding: 40px 20px;
-            -webkit-font-smoothing: antialiased;
         }
 
         .container { width: 100%; max-width: 480px; }
@@ -47,50 +45,18 @@
             padding: 32px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
+            position: relative; /* ให้ Dropdown อยู่ในกรอบ */
         }
 
-        h2 { 
-            margin: 0 0 24px 0; 
-            font-weight: 600; 
-            font-size: 18px; 
-            text-align: center; 
-            letter-spacing: -0.02em;
-        }
+        h2 { margin: 0 0 24px 0; font-weight: 600; font-size: 18px; text-align: center; }
 
         .label { 
-            font-size: 10px; 
-            font-weight: 600; 
-            color: var(--text-dim); 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            margin-bottom: 8px; 
-            display: block; 
+            font-size: 10px; font-weight: 600; color: var(--text-dim); 
+            text-transform: uppercase; margin-bottom: 8px; display: block; 
         }
 
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 16px;
-            position: relative;
-        }
-        .search-input {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            padding: 12px 18px 12px 40px;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .search-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
-        .search-icon {
-            position: absolute; left: 14px; top: 50%;
-            transform: translateY(-50%); color: var(--text-dim);
-            font-size: 14px; pointer-events: none;
-        }
-
-        /* Custom Dropdown */
-        .custom-select { position: relative; width: 100%; margin-bottom: 20px; }
+        /* Custom Dropdown Fix */
+        .custom-select { position: relative; width: 100%; margin-bottom: 20px; z-index: 100; }
         .select-selected {
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -106,21 +72,30 @@
             transform: rotate(45deg); margin-bottom: 3px;
         }
         .select-items {
-            position: absolute; background: #161b2a; border: 1px solid var(--border);
-            border-radius: 16px; top: calc(100% + 8px); left: 0; right: 0;
-            z-index: 99; overflow: hidden; opacity: 0; transform: translateY(-10px);
-            pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            position: absolute; 
+            background: #1a1f2e; 
+            border: 1px solid var(--border);
+            border-radius: 16px; 
+            top: calc(100% + 5px); left: 0; right: 0;
+            z-index: 999; /* สูงกว่าทุกอย่าง */
+            overflow: hidden; 
+            display: none; /* ใช้ display แทน opacity เพื่อกันการกดทับ */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
         .select-items div { padding: 14px 18px; cursor: pointer; font-size: 14px; color: var(--text-dim); }
         .select-items div:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
-        .select-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .select-show { display: block !important; }
 
-        input[type="password"], input[type="text"] {
+        .search-container { margin-bottom: 16px; position: relative; z-index: 1; }
+        .search-input {
             width: 100%; background: var(--input-bg); border: 1px solid var(--border);
-            padding: 14px 18px; border-radius: 16px; color: #fff; font-size: 14px;
-            margin-bottom: 20px; outline: none;
+            padding: 12px 18px 12px 40px; border-radius: 16px; color: #fff; outline: none;
         }
-        input:focus { border-color: var(--accent); }
+
+        input[type="password"] {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+            padding: 14px 18px; border-radius: 16px; color: #fff; margin-bottom: 20px; outline: none;
+        }
 
         button {
             width: 100%; padding: 14px; border-radius: 16px; border: none;
@@ -129,40 +104,29 @@
         .btn-primary { background: var(--accent); color: white; }
         .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); }
 
-        /* Key Items */
         .key-item {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: 20px; padding: 18px; margin-bottom: 12px;
         }
         .key-info { display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px; }
-        .key-id { font-weight: 600; font-size: 14px; color: #fff; letter-spacing: 0.02em; display: block; margin-bottom: 4px; }
-        
-        .hwid-status { font-size: 11px; color: var(--text-dim); display: flex; flex-direction: column; gap: 2px; }
-        .user-tag { color: var(--accent); font-weight: 500; font-size: 10px; background: rgba(99, 102, 241, 0.1); padding: 4px 8px; border-radius: 6px; width: fit-content; margin-top: 4px; }
+        .key-id { font-weight: 600; color: #fff; display: block; margin-bottom: 4px; }
         .status-unlimited { color: var(--admin-gold); font-weight: bold; }
-
-        .key-timer { 
-            font-size: 11px; font-weight: 500; 
-            color: var(--accent); background: rgba(99, 102, 241, 0.1); 
-            padding: 4px 10px; border-radius: 8px; white-space: nowrap;
-        }
+        .key-timer { font-size: 11px; color: var(--accent); background: rgba(99, 102, 241, 0.1); padding: 4px 10px; border-radius: 8px; }
 
         .actions { display: grid; grid-template-columns: 45px 1fr 1fr 38px 38px; gap: 6px; }
-        
         .input-qty {
-            margin: 0 !important; height: 38px !important; padding: 0 !important;
-            text-align: center; border-radius: 10px !important; background: rgba(255,255,255,0.05);
-            font-size: 13px; font-weight: 500; border: 1px solid var(--border); color: #fff;
+            text-align: center; border-radius: 10px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); color: #fff; height: 38px;
         }
-        .btn-sm { padding: 0; border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); height: 38px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
-        .btn-del { color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
-        .btn-reset { color: var(--success); border-color: rgba(16, 185, 129, 0.2); font-size: 16px; }
+        .btn-sm { border-radius: 10px; font-size: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border); height: 38px; }
+        .btn-del { color: var(--danger); }
+        .btn-reset { color: var(--success); }
 
         #toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: #fff; color: #000; padding: 10px 20px; border-radius: 50px;
-            font-size: 12px; font-weight: 600; display: none; z-index: 1000;
+            font-size: 12px; font-weight: 600; display: none; z-index: 2000;
         }
     </style>
 </head>
@@ -196,8 +160,7 @@
         </div>
 
         <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search Key or Username..." onkeyup="renderList()">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search Key or Username..." onkeyup="renderList()">
         </div>
         
         <div id="list-container"></div>
@@ -213,7 +176,9 @@
     let allKeys = {};
     let userLinks = {};
 
-    function toggleDropdown() { document.getElementById("dropdown-items").classList.toggle("select-show"); }
+    function toggleDropdown() { 
+        document.getElementById("dropdown-items").classList.toggle("select-show"); 
+    }
     
     function setDuration(val, text) {
         currentDuration = val;
@@ -221,10 +186,10 @@
         document.getElementById("dropdown-items").classList.remove("select-show");
     }
 
+    // ปิด dropdown เมื่อกดข้างนอก
     window.onclick = function(event) {
         if (!event.target.matches('.select-selected')) {
-            const dropdown = document.getElementById("dropdown-items");
-            if(dropdown) dropdown.classList.remove("select-show");
+            document.getElementById("dropdown-items").classList.remove("select-show");
         }
     }
 
@@ -246,10 +211,7 @@
         if (expiry > 2500000000) return "∞ INFINITE";
         const diff = expiry - Math.floor(Date.now() / 1000);
         if (diff <= 0) return "EXPIRED";
-        const d = Math.floor(diff / 86400), 
-              h = Math.floor((diff % 86400) / 3600), 
-              m = Math.floor((diff % 3600) / 60), 
-              s = diff % 60;
+        const d = Math.floor(diff / 86400), h = Math.floor((diff % 86400) / 3600), m = Math.floor((diff % 3600) / 60), s = diff % 60;
         return (d > 0 ? d + "d " : "") + `${h}h ${m}m ${s}s`;
     }
 
@@ -259,10 +221,8 @@
                 fetch(`${BASE_URL}/keys.json?auth=${DB_SECRET}`),
                 fetch(`${BASE_URL}/user_links.json?auth=${DB_SECRET}`)
             ]);
-            
             allKeys = await resKeys.json() || {};
             userLinks = await resLinks.json() || {};
-            
             renderList();
         } catch (e) { console.error(e); }
     }
@@ -274,24 +234,19 @@
         
         const keyToUserInfo = {};
         Object.entries(userLinks).forEach(([uid, data]) => {
-            if (typeof data === 'object' && data !== null) {
-                keyToUserInfo[data.key] = { name: data.name, uid: uid };
-            } else {
-                keyToUserInfo[data] = { name: `UID: ${uid}`, uid: uid };
-            }
+            keyToUserInfo[typeof data === 'object' ? data.key : data] = { name: data.name || uid };
         });
 
         const filteredKeys = Object.keys(allKeys).reverse().filter(id => {
-            const userInfo = keyToUserInfo[id];
-            const userName = userInfo ? userInfo.name.toLowerCase() : "";
-            return id.toLowerCase().includes(searchTerm) || userName.includes(searchTerm);
+            const user = keyToUserInfo[id];
+            return id.toLowerCase().includes(searchTerm) || (user && user.name.toLowerCase().includes(searchTerm));
         });
 
         filteredKeys.forEach(id => {
             const item = allKeys[id];
             const isUnlimited = item.hwid === "NONE";
             const hasHWID = item.hwid && item.hwid !== "" && item.hwid !== "NONE";
-            const userInfo = keyToUserInfo[id];
+            const user = keyToUserInfo[id];
             
             const div = document.createElement('div');
             div.className = 'key-item';
@@ -299,11 +254,11 @@
                 <div class="key-info">
                     <div>
                         <span class="key-id">${id}</span>
-                        <div class="hwid-status">
+                        <div style="font-size:11px; color:var(--text-dim)">
                             <span class="${isUnlimited ? 'status-unlimited' : ''}">
-                                ${isUnlimited ? '🔓 UNLIMITED (ADMIN)' : (hasHWID ? '🔒 Locked' : '🔓 Available')}
+                                ${isUnlimited ? '🔓 UNLIMITED' : (hasHWID ? '🔒 Locked' : '🔓 Available')}
                             </span>
-                            ${userInfo ? `<span class="user-tag">👤 ${userInfo.name}</span>` : ''}
+                            ${user ? ` | 👤 ${user.name}` : ''}
                         </div>
                     </div>
                     <span class="key-timer" id="timer-${id}">${getCountdown(item.expiry)}</span>
@@ -312,88 +267,55 @@
                     <input type="number" class="input-qty" id="val-${id}" value="1">
                     <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'add')">+ D</button>
                     <button class="btn-sm" onclick="updateTime('${id}', ${item.expiry}, 'sub')">- D</button>
-                    <button class="btn-sm btn-reset" title="Reset HWID" onclick="resetHWID('${id}')" ${isUnlimited ? 'disabled style="opacity:0.3"' : ''}>↺</button>
-                    <button class="btn-sm btn-del" title="Delete Key" onclick="deleteKey('${id}')">✕</button>
+                    <button class="btn-sm btn-reset" onclick="resetHWID('${id}')" ${isUnlimited ? 'disabled style="opacity:0.2"' : ''}>↺</button>
+                    <button class="btn-sm btn-del" onclick="deleteKey('${id}')">✕</button>
                 </div>`;
             container.appendChild(div);
         });
-
-        if (filteredKeys.length === 0 && searchTerm !== "") {
-            container.innerHTML = `<div style="text-align:center; color:var(--text-dim); padding:20px; font-size:13px;">No results found for "${searchTerm}"</div>`;
-        }
     }
 
-    setInterval(() => {
-        for (let id in allKeys) {
-            const el = document.getElementById(`timer-${id}`);
-            if (el) {
-                const timeStr = getCountdown(allKeys[id].expiry);
-                el.innerText = timeStr;
-                if (timeStr === "EXPIRED") fetchKeys();
-            }
-        }
-    }, 1000);
-
     async function generateAndSave() {
-        // เปลี่ยน Prefix เป็น ??- ถ้าเลือก ADMIN
         const prefix = currentDuration === 'ADMIN' ? '??-' : 'QA-';
         const key = prefix + Math.random().toString(36).substring(2, 7).toUpperCase();
         
-        let expiry;
-        let hwidValue = "";
-
-        if (currentDuration === 'ADMIN') {
-            expiry = 3000000000; // Lifetime
-            hwidValue = "NONE";  // ตั้งเป็น NONE เพื่อให้โปรแกรมข้ามการเช็คเครื่อง
-        } else {
-            expiry = (currentDuration === 99999) ? 3000000000 : Math.floor(Date.now() / 1000) + (currentDuration * 86400);
-            hwidValue = "";
-        }
+        let expiry = (currentDuration === 'ADMIN' || currentDuration === 99999) ? 3000000000 : Math.floor(Date.now() / 1000) + (currentDuration * 86400);
+        let hwid = currentDuration === 'ADMIN' ? "NONE" : "";
 
         await fetch(`${BASE_URL}/keys/${key}.json?auth=${DB_SECRET}`, { 
-            method: 'PUT', 
-            body: JSON.stringify({ expiry: expiry, hwid: hwidValue }) 
+            method: 'PUT', body: JSON.stringify({ expiry, hwid }) 
         });
-        showToast(currentDuration === 'ADMIN' ? "Admin Key Generated" : "Key Generated"); 
+        showToast("Key Generated: " + key);
         fetchKeys();
     }
 
-    async function updateTime(key, currentExpiry, mode) {
-        const valInput = document.getElementById(`val-${key}`);
-        const days = parseInt(valInput.value) || 0;
-        let newExpiry = mode === 'add' ? currentExpiry + (days * 86400) : currentExpiry - (days * 86400);
-        
-        await fetch(`${BASE_URL}/keys/${key}/expiry.json?auth=${DB_SECRET}`, { method: 'PUT', body: JSON.stringify(newExpiry) });
-        showToast("Time Updated"); fetchKeys();
+    async function updateTime(key, cur, mode) {
+        const days = parseInt(document.getElementById(`val-${key}`).value) || 0;
+        let expiry = mode === 'add' ? cur + (days * 86400) : cur - (days * 86400);
+        await fetch(`${BASE_URL}/keys/${key}/expiry.json?auth=${DB_SECRET}`, { method: 'PUT', body: JSON.stringify(expiry) });
+        showToast("Updated"); fetchKeys();
     }
 
     async function resetHWID(key) {
-        if (!confirm("Confirm Reset HWID for " + key + "?")) return;
+        if (!confirm("Reset HWID?")) return;
         await fetch(`${BASE_URL}/keys/${key}/hwid.json?auth=${DB_SECRET}`, { method: 'PUT', body: JSON.stringify("") });
-        showToast("HWID Reset Success"); fetchKeys();
+        showToast("Reset Done"); fetchKeys();
     }
 
     async function deleteKey(key) {
-        if (!confirm("Permanently delete " + key + "?")) return;
-        
-        const linkedUserUID = Object.keys(userLinks).find(uid => {
-            const data = userLinks[uid];
-            return (typeof data === 'object' ? data.key : data) === key;
-        });
-        
-        const tasks = [fetch(`${BASE_URL}/keys/${key}.json?auth=${DB_SECRET}`, { method: 'DELETE' })];
-        if (linkedUserUID) {
-            tasks.push(fetch(`${BASE_URL}/user_links/${linkedUserUID}.json?auth=${DB_SECRET}`, { method: 'DELETE' }));
+        if (!confirm("Delete " + key + "?")) return;
+        await fetch(`${BASE_URL}/keys/${key}.json?auth=${DB_SECRET}`, { method: 'DELETE' });
+        showToast("Deleted"); fetchKeys();
+    }
+
+    function startDataSync() { fetchKeys(); setInterval(fetchKeys, 15000); }
+    
+    // อัปเดต Timer ทุกวินาที
+    setInterval(() => {
+        for (let id in allKeys) {
+            const el = document.getElementById(`timer-${id}`);
+            if (el) el.innerText = getCountdown(allKeys[id].expiry);
         }
-
-        await Promise.all(tasks);
-        showToast("Key & Links Deleted"); fetchKeys();
-    }
-
-    function startDataSync() { 
-        fetchKeys(); 
-        setInterval(fetchKeys, 15000);
-    }
+    }, 1000);
 </script>
 </body>
 </html>
